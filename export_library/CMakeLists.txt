@@ -3,23 +3,37 @@ cmake_minimum_required(VERSION 3.0)
 project(MyLibrary VERSION 1.2.3)
 
 # 添加库的源文件
-add_library(MyLibrary SHARED my_library.cpp)
+add_library(common SHARED my_library.cpp)
+add_library(core SHARED my_core.cpp)
+
 
 # 设置库的版本属性
-set_target_properties(MyLibrary PROPERTIES
+set_target_properties(common PROPERTIES
     VERSION ${MyLibrary_VERSION}
     SOVERSION ${MyLibrary_VERSION_MAJOR}.${MyLibrary_VERSION_MINOR}
+    OUTPUT_NAME ${PROJECT_NAME}_common
+)
+set_target_properties(core PROPERTIES
+    VERSION ${MyLibrary_VERSION}
+    SOVERSION ${MyLibrary_VERSION_MAJOR}.${MyLibrary_VERSION_MINOR}
+    OUTPUT_NAME ${PROJECT_NAME}_core
 )
 
-# 添加包含目录
-target_include_directories(MyLibrary PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(common INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:include/MyLibrary>
+)
 
+target_include_directories(core INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:include/MyLibrary>
+)
 
 # 安装部分
 install(FILES cmake/MyLibraryHelper.cmake DESTINATION lib/cmake/MyLibrary)
 
 # 安装库和头文件
-install(TARGETS MyLibrary
+install(TARGETS core common
   EXPORT MyLibraryTargets
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
@@ -27,20 +41,12 @@ install(TARGETS MyLibrary
   RUNTIME DESTINATION bin
 )
 
-# install(FILES my_library.h DESTINATION include/MyLibrary)
-install(FILES my_library.h DESTINATION include/MyLibrary)
-
-include(GNUInstallDirs)  # 导入 GNUInstallDirs 模块，包含了这些变量的默认值
-set(MyLibrary_DIRS ${CMAKE_INSTALL_PREFIX}/lib/cmake/MyLibrary)
-set(MyLibrary_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include/MyLibrary)
-set(MyLibrary_LIBRARY_DIRS ${CMAKE_INSTALL_PREFIX}/lib/)
-
+install(FILES my_library.h my_core.h  DESTINATION include/MyLibrary)
 
 include(CMakePackageConfigHelpers) # 生成 MyLibraryConfig.cmake 文件
 configure_package_config_file(MyLibraryConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/MyLibraryConfig.cmake
   INSTALL_DESTINATION lib/cmake/MyLibrary
-  # PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR
 )
 
 # 生成 MyLibraryVersion.cmake 文件
@@ -58,17 +64,27 @@ install(FILES
 )
 
 # 导出库的导出目标
-export(TARGETS MyLibrary FILE MyLibraryTargets.cmake)
+export(TARGETS core common FILE MyLibraryTargets.cmake)
 
 # 获取 MyLibrary 目标的 INTERFACE_INCLUDE_DIRECTORIES 属性值
-get_target_property(include_dirs MyLibrary INTERFACE_INCLUDE_DIRECTORIES)
+# get_target_property(include_dirs common INTERFACE_INCLUDE_DIRECTORIES)
+# list(FILTER include_dirs EXCLUDE REGEX "^${CMAKE_CURRENT_SOURCE_DIR}")
+# set_target_properties(common PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${include_dirs}")
 
-# 从属性值中过滤掉源代码目录中的路径
+
+
+# core
+get_target_property(include_dirs core INTERFACE_INCLUDE_DIRECTORIES)
 list(FILTER include_dirs EXCLUDE REGEX "^${CMAKE_CURRENT_SOURCE_DIR}")
+set_target_properties(core PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${include_dirs}")
+
+
+
+
 
 # 设置修正后的 INTERFACE_INCLUDE_DIRECTORIES 属性值
-set_target_properties(MyLibrary PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${include_dirs}")
 install(EXPORT MyLibraryTargets
+        NAMESPACE MyLibrary::
         FILE MyLibraryTargets.cmake
         DESTINATION lib/cmake/MyLibrary
 )
