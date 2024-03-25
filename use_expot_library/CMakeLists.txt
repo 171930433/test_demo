@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(MyProject)
 
-set(CMAKE_PREFIX_PATH "/home/gsk/pro/test_demo/install_dir")
+set(CMAKE_PREFIX_PATH "/home/gsk/pro/test_demo/install")
 
 # 寻找 MyLibrary
 find_package(lm REQUIRED)
@@ -10,7 +10,10 @@ find_package(lm REQUIRED)
 # 创建可执行文件
 add_executable(my_executable main.cpp)
 
-# MyDemo()
+
+message(in caller CMAKE_CURRENT_LIST_DIR=${CMAKE_CURRENT_LIST_DIR})
+
+MyDemo()
 
 message(status 1!!!!!!${lm_FOUND})
 message(status 2!!!!!!${lm_DIRS})

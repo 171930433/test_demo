@@ -20,4 +20,7 @@ install(FILES cmake/Helper.cmake DESTINATION lib/cmake/${PROJECT_NAME})
 
 #!!!!!!!!!!! 导出 cmakelist,使得findpackage可以使用
 include(cmake/export_project.cmake)
-export_project(PROJECT_TARGETS core common)
+export_project(
+  PROJECT_TARGETS core common
+  INSTALL_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}
+)

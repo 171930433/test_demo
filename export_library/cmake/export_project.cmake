@@ -1,6 +1,7 @@
-function(install_headers)
+function(install_headers _HEADER_DIR)
+  # message(install_headers called, _HEADER_DIR=${_HEADER_DIR})
 
-  file(GLOB_RECURSE headers ${PROJECT_SOURCE_DIR}/*.h ${PROJECT_SOURCE_DIR}/*.hpp)
+  file(GLOB_RECURSE headers ${_HEADER_DIR}/*.h ${_HEADER_DIR}/*.hpp)
   foreach(header ${headers})
       file(RELATIVE_PATH relative_header ${CMAKE_SOURCE_DIR} ${header})
       get_filename_component(header_dir ${relative_header} DIRECTORY)
@@ -12,10 +13,11 @@ endfunction()
 
 function(export_project)
   # 解析命名参数
-  cmake_parse_arguments(EXPORT_PROJECT "" "" "PROJECT_TARGETS" ${ARGN})
+  cmake_parse_arguments(EXPORT_PROJECT "" "" "PROJECT_TARGETS;INSTALL_HEADER_DIRS" ${ARGN})
   
   # 获取目标名称
   set(project_targets ${EXPORT_PROJECT_PROJECT_TARGETS})
+  set(install_header_dirs ${EXPORT_PROJECT_INSTALL_HEADER_DIRS})
 
 
   # 安装目录去除源码部分
@@ -70,7 +72,9 @@ function(export_project)
   )
 
   # 安装PROJECT_SOURCE_DIR下所有*.h *.hpp目录
-  install_headers()
-
+  foreach(single_dir ${install_header_dirs})
+    install_headers(${single_dir})
+  endforeach()
+  
 endfunction()
 
