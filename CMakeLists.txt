@@ -11,5 +11,5 @@ add_executable(demo main.cpp )  # 添加 ${PROTO_SRCS} 和 ${PROTO_HDRS} 到源�
 target_link_libraries(demo )
 
 
-# add_subdirectory(export_library)
-add_subdirectory(use_expot_library)
+add_subdirectory(export_library)
+# add_subdirectory(use_expot_library)

@@ -1,0 +1,5 @@
+Package: @PROJECT_NAME@
+Version: @PROJECT_VERSION@
+Architecture: ubuntu2204-x86-64
+Maintainer: guanshoukui guanshoukui@qq.com
+Description: demo

@@ -10,6 +10,21 @@ function(install_headers _HEADER_DIR)
 
 endfunction()
 
+function(install_deb)
+  # 创建DEBIAN目录
+  file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/DEBIAN)
+  # 创建控制文件
+  configure_file(control.in ${CMAKE_INSTALL_PREFIX}/DEBIAN/control @ONLY)
+  # 打包
+  add_custom_target(deb
+    COMMAND dpkg-deb --build ${CMAKE_INSTALL_PREFIX} ${CMAKE_SOURCE_DIR} 
+    WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}
+    COMMENT "Packaging Debian package..."
+  )
+  # add_dependencies(deb install)
+endfunction()
+
+
 
 function(export_project)
   # 解析命名参数
@@ -76,5 +91,10 @@ function(export_project)
     install_headers(${single_dir})
   endforeach()
   
+  # 打包deb
+  install_deb()
+
+
+
 endfunction()
 
