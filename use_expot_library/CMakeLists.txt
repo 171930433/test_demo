@@ -20,7 +20,8 @@ find_package(pluginlib REQUIRED)
 add_executable(my_executable main.cpp)
 
 # 链接 MyLibrary
-target_link_libraries(my_executable PRIVATE lm::core lm::common)
+# target_link_libraries(my_executable PRIVATE lm::core lm::common)
+target_link_libraries(my_executable PRIVATE lm::lm)
 
 add_executable(direct_load direct_load_so.cpp)
 

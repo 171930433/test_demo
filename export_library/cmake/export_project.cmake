@@ -52,21 +52,19 @@ function(export_project)
     target_link_directories(${single_target} INTERFACE
       $<INSTALL_INTERFACE:lib>
     )
-  endforeach()
 
-
-  # 设置库的版本属性
-  foreach(single_target ${project_targets})
+    # 设置库的版本属性
     set_target_properties(${single_target} PROPERTIES
-      VERSION ${PROJECT_VERSION}
-      SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-      OUTPUT_NAME ${PROJECT_NAME}_${single_target}
-    )  
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    OUTPUT_NAME ${PROJECT_NAME}_${single_target}
+  )  
   endforeach()
+
   
   # 安装库和头文件
   install(TARGETS ${project_targets}
-    EXPORT ${PROJECT_NAME}Targets
+    EXPORT ${PROJECT_NAME}-targets
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
     INCLUDES DESTINATION include/${PROJECT_NAME}
@@ -74,27 +72,27 @@ function(export_project)
   )
 
   include(CMakePackageConfigHelpers)
-  configure_package_config_file(cmake/Config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake 
+  configure_package_config_file(cmake/config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake 
     INSTALL_DESTINATION lib/cmake/${PROJECT_NAME}
   )
 
   write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Version.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-version.cmake
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY AnyNewerVersion
   )
 
   install(FILES 
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Version.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-version.cmake
     DESTINATION lib/cmake/${PROJECT_NAME}
   )
 
   export(TARGETS ${project_targets} FILE ${PROJECT_NAME}Targets.cmake)
-  install(EXPORT ${PROJECT_NAME}Targets
+  install(EXPORT ${PROJECT_NAME}-targets
     NAMESPACE ${PROJECT_NAME}::
-    FILE ${PROJECT_NAME}Targets.cmake
+    FILE ${PROJECT_NAME}-targets.cmake
     DESTINATION lib/cmake/${PROJECT_NAME}
   )
 
