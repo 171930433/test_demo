@@ -47,7 +47,10 @@ function(export_project)
   # 安装目录去除源码部分
   foreach(single_target ${project_targets})
     target_include_directories(${single_target} INTERFACE
-      $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+      # $<INSTALL_INTERFACE:include/${PROJECT_NAME}> # 默认包含,不需要重复添加
+    )
+    target_link_directories(${single_target} INTERFACE
+      $<INSTALL_INTERFACE:lib>
     )
   endforeach()
 

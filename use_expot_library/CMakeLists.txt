@@ -7,6 +7,14 @@ project(MyProject)
 find_package(lm REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 
+## 找到 ROS 包
+find_package(roslib REQUIRED)
+find_package(pluginlib REQUIRED)
+
+# message(pluginlib=${pluginlib_FOUND})
+# message(pluginlib=${pluginlib_DIRS})
+# message(pluginlib=${pluginlib_FOUND})
+
 
 # 创建可执行文件
 add_executable(my_executable main.cpp)
