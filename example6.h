@@ -315,3 +315,7 @@ int fun6()
 
   return 0;
 }
+
+TEST(multi_index_container, Test6) {
+  EXPECT_EQ(fun6(), 0);  // 2 + 3 = 5
+}

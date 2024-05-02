@@ -13,12 +13,13 @@
 #define BOOST_MULTI_INDEX_ENABLE_SAFE_MODE
 #endif
 
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/identity.hpp>
-#include <boost/multi_index/ordered_index.hpp>
 #include <algorithm>
 #include <iostream>
 #include <iterator>
+
+#include <boost/multi_index/identity.hpp>
+#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index_container.hpp>
 
 using boost::multi_index_container;
 using namespace boost::multi_index;
@@ -29,16 +30,12 @@ using namespace boost::multi_index;
  */
 
 template <typename IntegralType>
-struct modulo_less
-{
+struct modulo_less {
   modulo_less(IntegralType m) : modulo(m) {}
 
-  bool operator()(IntegralType x, IntegralType y) const
-  {
-    return (x % modulo) < (y % modulo);
-  }
+  bool operator()(IntegralType x, IntegralType y) const { return (x % modulo) < (y % modulo); }
 
-private:
+ private:
   IntegralType modulo;
 };
 
@@ -47,23 +44,18 @@ private:
  */
 
 typedef multi_index_container<
-    unsigned int,
-    indexed_by<
-        ordered_unique<identity<unsigned int>>,
-        ordered_non_unique<identity<unsigned int>, modulo_less<unsigned int>>>>
+    unsigned int, indexed_by<ordered_unique<identity<unsigned int>>, ordered_non_unique<identity<unsigned int>, modulo_less<unsigned int>>>>
     modulo_indexed_set;
 
-int fun3()
-{
+int fun3() {
   /* define a modulo_indexed_set with modulo==10 */
 
-  modulo_indexed_set::ctor_args_list args_list =
-      boost::make_tuple(
-          /* ctor_args for index #0 is default constructible */
-          nth_index<modulo_indexed_set, 0>::type::ctor_args(),
+  modulo_indexed_set::ctor_args_list args_list = boost::make_tuple(
+      /* ctor_args for index #0 is default constructible */
+      nth_index<modulo_indexed_set, 0>::type::ctor_args(),
 
-          /* first parm is key_from_value, second is our sought for key_compare */
-          boost::make_tuple(identity<unsigned int>(), modulo_less<unsigned int>(10)));
+      /* first parm is key_from_value, second is our sought for key_compare */
+      boost::make_tuple(identity<unsigned int>(), modulo_less<unsigned int>(10)));
 
   modulo_indexed_set m(args_list);
   /* this could have be written online without the args_list variable,
@@ -80,8 +72,7 @@ int fun3()
    * the equivalent numbers under modulo_less
    */
 
-  for (modulo_indexed_set::iterator it = m.begin(); it != m.end(); ++it)
-  {
+  for (modulo_indexed_set::iterator it = m.begin(); it != m.end(); ++it) {
     std::cout << *it << " -> ( ";
 
     nth_index<modulo_indexed_set, 1>::type::iterator it0, it1;
@@ -92,4 +83,8 @@ int fun3()
   }
 
   return 0;
+}
+
+TEST(multi_index_container, Test3) {
+  EXPECT_EQ(fun3(), 0);  // 2 + 3 = 5
 }

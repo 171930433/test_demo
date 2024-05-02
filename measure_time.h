@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <chrono>
 #include <unordered_map>
@@ -97,7 +99,7 @@ auto TimerRun(Func &&func, const std::string &function_name, Args &&...args)
         auto end = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration<double, std::milli>(end - start).count();
         update_function_stats(func, duration, function_name);
-
+        std::cout << function_name << " used " << (duration) << "ms \n";
         return std::make_pair(result, duration);
     }
 }
@@ -181,4 +183,9 @@ int FunMeasurementTime()
         std::cout << *val << std::endl;
     }
     return 0;
+}
+
+
+TEST(measure_time, FunMeasurementTime) {
+  EXPECT_EQ(FunMeasurementTime(), 0);  // 2 + 3 = 5
 }

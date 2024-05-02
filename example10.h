@@ -13,15 +13,16 @@
 #define BOOST_MULTI_INDEX_ENABLE_SAFE_MODE
 #endif
 
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/identity.hpp>
-#include <boost/multi_index/ordered_index.hpp>
-#include <boost/multi_index/random_access_index.hpp>
-#include <boost/tokenizer.hpp>
 #include <algorithm>
 #include <iostream>
 #include <iterator>
 #include <string>
+
+#include <boost/multi_index/identity.hpp>
+#include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index/random_access_index.hpp>
+#include <boost/multi_index_container.hpp>
+#include <boost/tokenizer.hpp>
 
 using boost::multi_index_container;
 using namespace boost::multi_index;
@@ -30,12 +31,7 @@ using namespace boost::multi_index;
  * by dictionary order.
  */
 
-typedef multi_index_container<
-    std::string,
-    indexed_by<
-        random_access<>,
-        ordered_non_unique<identity<std::string>>>>
-    text_container2;
+typedef multi_index_container<std::string, indexed_by<random_access<>, ordered_non_unique<identity<std::string>>>> text_container2;
 
 /* ordered index */
 
@@ -46,9 +42,7 @@ typedef nth_index<text_container2, 1>::type ordered_text2;
  */
 
 template <typename IndexIterator>
-text_container2::size_type text_position(
-    const text_container2 &tc, IndexIterator it)
-{
+text_container2::size_type text_position(const text_container2 &tc, IndexIterator it) {
   /* project to the base index and calculate offset from begin() */
   return tc.project<0>(it) - tc.begin();
   // return project<0>(tc, it) - tc.begin();
@@ -56,8 +50,7 @@ text_container2::size_type text_position(
 
 typedef boost::tokenizer<boost::char_separator<char>> text_tokenizer;
 
-int fun10()
-{
+int fun10() {
   std::string text =
       "'Oh, you wicked little thing!' cried Alice, catching up the kitten, "
       "and giving it a little kiss to make it understand that it was in "
@@ -82,18 +75,13 @@ int fun10()
   std::cout << "enter a position (0-" << tc.size() - 1 << "):";
   text_container2::size_type pos = tc.size();
   std::cin >> pos;
-  if (pos >= tc.size())
-  {
+  if (pos >= tc.size()) {
     std::cout << "out of bounds" << std::endl;
-  }
-  else
-  {
+  } else {
     std::cout << "the word \"" << tc[pos] << "\" appears at position(s): ";
 
-    std::pair<ordered_text2::iterator, ordered_text2::iterator> p =
-        get<1>(tc).equal_range(tc[pos]);
-    while (p.first != p.second)
-    {
+    std::pair<ordered_text2::iterator, ordered_text2::iterator> p = get<1>(tc).equal_range(tc[pos]);
+    while (p.first != p.second) {
       std::cout << text_position(tc, p.first++) << " ";
     }
 
@@ -101,4 +89,8 @@ int fun10()
   }
 
   return 0;
+}
+
+TEST(multi_index_container, Test10) {
+  EXPECT_EQ(fun10(), 0);  // 2 + 3 = 5
 }
