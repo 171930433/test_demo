@@ -10,8 +10,9 @@
 // #include "example9.h"
 #include "example10.h"
 #include "measure_time.h"
-#include "test_protobuf.h"
+// #include "test_protobuf.h"
 #include "coroutine.h"
+#include "inherit_test.h"
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
